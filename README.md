@@ -1,4 +1,4 @@
-﻿# PitchProof
+# PitchProof
 
 A focused human review of an AI-generated claim. The homepage uses a large, direct hero and a claim-to-review example.
 
@@ -12,6 +12,22 @@ npm run dev
 ```
 
 Production rendering: `npm run build`, then `npm start`.
+
+## Local links
+
+After `npm run dev`, open:
+
+- [Homepage](http://localhost:3000/)
+- [Customer workspace](http://localhost:3000/review)
+- [Reviewer workspace](http://localhost:3000/reviewers)
+
+For the production preview on port 3100, run `npm run build` followed by `npm run start -- --port 3100`, then open:
+
+- [Preview homepage](http://localhost:3100/)
+- [Preview customer workspace](http://localhost:3100/review)
+- [Preview reviewer workspace](http://localhost:3100/reviewers)
+
+These links work on the computer running the local server. They are not public deployment links. If the terminal reports a different port, use that port instead.
 
 ## Separate paths
 
