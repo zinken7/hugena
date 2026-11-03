@@ -1,39 +1,31 @@
 ﻿# PitchProof
 
-Human verification for AI-generated claims. A responsive Next.js prototype.
+A focused human review of an AI-generated claim. The homepage uses a large, direct hero and a claim-to-review example.
 
-## Run
+## Run locally
 
-Use Node.js 24 and npm:
+Use Node.js 24:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-For production rendering: `npm run build` then `npm start`.
+Production rendering: `npm run build`, then `npm start`.
 
-## Customer journey
+## Separate paths
 
-1. Share one AI-generated claim, its context, constraints and the decision at stake.
-2. Compare standard and external advisers. Read short sample opinions about the hosting-cost example before choosing an adviser.
-3. Confirm the chosen adviser, scope and fee. Create a local demo request.
-4. The request remains awaiting review. The simulated adviser desk accepts a conclusion, finding, evidence and next step.
-5. View or print the scoped report. The sample report remains clearly separate from custom submissions.
+- `/`: brief product introduction, three-step explanation, and separate customer/reviewer entry points.
+- `/review`: customer workspace. Share a claim, compare adviser sample opinions and prices, confirm the request, track its status, and read the published report. Customers do not see assessment editors, adviser creation, or commission controls.
+- `/reviewers`: reviewer workspace. View assigned requests, manage adviser profiles, draft and publish an evidence-based assessment, and inspect simulated commission. Reviewers do not choose advisers from this workspace.
 
-The concrete homepage example asks whether 5,000 active users establish a hosting cost below A$50/month. The illustrative assessment explains the missing usage assumptions; it does not claim a verified current provider price.
+Submission ends on a read-only customer status page. A report becomes available only after publication in the reviewer workspace. The draft assessment is saved separately from the published report. Navigate back to the customer portal or reload to see the publication.
 
-## Adviser network
+The sample report is illustrative. Adviser opinions relate to the shared hosting-cost example, not automatically to the customer's claim. Custom claims never receive an automatic fabricated verdict.
 
-Standard advisers are supplied by PitchProof. External adviser profiles can be added with expertise, a biography, fee and sample opinion. All availability labels mean available for demo selection, not live online status.
+## Commercial model
 
-For external advisers only, a completed and paid case allocates 10% of the agreed fee to PitchProof and 90% to the adviser. A$200 becomes A$20 commission and A$180 retained. Commission uses integer cents and rounds to the nearest cent. It is deducted from the adviser fee, not added to the client price. Completion/payment status is independent of the report conclusion: an inconclusive finding can still be a delivered review.
-
-## Persistence and limits
-
-The current claim, chosen adviser, request, assessment and payment simulation are saved under `pitchproof-claims-v2`. External profiles use `pitchproof-external-advisers-v1`. The original idea-review prototype's data is not migrated or deleted. One current case is stored; this is not a multi-case ledger. Storage failures show a notice and allow continued in-memory use.
-
-No real adviser is contacted. No account, payment, automatic verification, live opinion or independently verified credential is created. Reports entered at the adviser desk are user-entered demo assessments. Production launch requires authenticated customer/adviser roles, persistent cases, genuine adviser availability and replies, verified credentials, payment processing and trusted settlement events.
+Standard advisers are supplied by PitchProof. External advisers pay 10% of their fee on a completed, paid case and retain 90%. A$200 allocates A$20 to PitchProof and A$180 to the adviser. Integer cents and nearest-cent commission rounding preserve the fee total. This is not an added customer charge. The commercial model appears in reviewer tools; customers see the total review price.
 
 ## Verification
 
@@ -43,4 +35,12 @@ npm run typecheck
 node --test tests/advisers.test.mjs
 ```
 
-Browser tests use installed Microsoft Edge. Start `npm run start -- --port 3100` in another terminal, then run `npx playwright test`. Tests cover external profile/opinion creation, adviser choice, request confirmation, review/report flow, persistence, commission, and mobile overflow. Screenshots are saved to ignored `artifacts/`.
+With Microsoft Edge installed, start `npm run start -- --port 3100`, then run `npx playwright test`. The suite covers separate customer/reviewer controls, submission, draft restoration, publication, report viewing, external-adviser onboarding, commission, mobile overflow, and automated WCAG A/AA checks on the three entry pages. Screenshot artifacts are ignored by Git. Automated checks are not a complete accessibility certification.
+
+## Production boundary
+
+This is a polished frontend preview, not a live marketplace. Separate routes provide UX separation, not authentication or authorization. The same device can open either portal. Profiles, availability, assessments and payment statuses are demonstration data. No real adviser is contacted or paid.
+
+The single current case and assessment draft are stored in `pitchproof-claims-v2`; external profiles use `pitchproof-external-advisers-v1`. Starting another claim asks before replacing the current request. Original idea-demo data remains untouched. Storage failures show a notice.
+
+Before public launch, add authenticated customer/adviser accounts, server-side ownership and permissions, a persistent multi-case database, real availability and messaging, verified reviewer credentials, notifications, and trusted payment/commission processing. Browser payment flags must never trigger real transfers.
