@@ -1,6 +1,6 @@
 ﻿export type Specialty = 'business' | 'technical' | 'ux';
 export type Adviser = {
-  id: string; name: string; role: string; initials: string; expertise: string[];
+  opinion?: string; id: string; name: string; role: string; initials: string; expertise: string[];
   description: string; color: string; specialty: Specialty;
   provider: 'platform' | 'external'; feeCents: number;
 };
@@ -9,6 +9,7 @@ export function isAdviser(value: unknown): value is Adviser {
   if (!value || typeof value !== 'object') return false;
   const a = value as Adviser;
   return ['id', 'name', 'role', 'initials', 'description'].every(key => typeof a[key as keyof Adviser] === 'string' && String(a[key as keyof Adviser]).trim().length > 0)
+    && (a.opinion === undefined || typeof a.opinion === 'string')
     && ['peach', 'blue', 'purple'].includes(a.color)
     && ['business', 'technical', 'ux'].includes(a.specialty)
     && ['platform', 'external'].includes(a.provider)
