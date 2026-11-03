@@ -1,0 +1,40 @@
+{
+  "example": { "name": "Neighbourhood Table", "problem": "Busy people want affordable, healthy meals but have little time to cook.", "solution": "A local platform connecting home cooks with neighbours who want fresh, ready-made meals.", "users": "Busy professionals and students living in urban neighbourhoods." },
+  "reviewers": [
+    { "id": "business", "name": "Alex Morgan", "role": "Business Consultant", "initials": "AM", "expertise": ["Business strategy", "Market validation"], "description": "Turn a promising concept into a business that makes sense. Pressure-test your market, pricing, and path to growth.", "color": "peach" },
+    { "id": "technical", "name": "Sam Chen", "role": "Technical Expert", "initials": "SC", "expertise": ["Product architecture", "MVP planning"], "description": "Find a practical path from idea to build. Explore feasibility, technical risks, and what your first version really needs.", "color": "blue" },
+    { "id": "ux", "name": "Jordan Ellis", "role": "UX Designer", "initials": "JE", "expertise": ["User research", "Product experience"], "description": "See your idea through your users’ eyes. Challenge assumptions and shape an experience people will want to use.", "color": "purple" }
+  ],
+  "reports": {
+    "business": {
+      "summary": "A clear everyday problem and a focused audience give this concept a useful starting point. The next step is to test demand before investing in a full product.",
+      "strengths": ["Starts with a recognisable, recurring customer problem.", "A focused initial audience makes early interviews easier.", "The core proposition can be tested with a small manual pilot."],
+      "weaknesses": [
+        { "title": "Demand is still an assumption", "why": "A problem can be real without customers being willing to pay for a new solution.", "improvement": "Interview five target users about their most recent experience. Ask what they tried and what it cost." },
+        { "title": "The business model needs a first test", "why": "Acquisition and delivery costs can outweigh revenue even when people like the idea.", "improvement": "Map the costs of serving one customer and test one price with a small pilot." },
+        { "title": "The difference from alternatives is unclear", "why": "People need a compelling reason to switch from their current workaround.", "improvement": "Compare three existing alternatives and write one specific reason your audience would choose you." }
+      ],
+      "tasks": ["Interview five potential users", "Map the cost of serving one customer", "Compare three existing alternatives", "Run a small pilot before building"]
+    },
+    "technical": {
+      "summary": "The concept can start small. Focus on a single end-to-end journey, validate it manually, and use what you learn to decide what to automate.",
+      "strengths": ["The main problem can be explored without a complex platform.", "A defined audience helps prioritise the first user journey.", "A manual pilot can uncover requirements before development."],
+      "weaknesses": [
+        { "title": "The first release has no clear boundary", "why": "Building every feature early delays the learning that matters most.", "improvement": "Choose one user journey and list the minimum steps needed to complete it." },
+        { "title": "Data handling is not yet defined", "why": "Collecting unnecessary personal data increases implementation and privacy risk.", "improvement": "List the data required at each step and remove anything the pilot does not need." },
+        { "title": "Failure cases are unexplored", "why": "Missing or incorrect information can stop users from completing the core task.", "improvement": "Sketch what happens when an input is invalid, a request fails, or a user leaves midway." }
+      ],
+      "tasks": ["Map one end-to-end user journey", "Define the minimum data needed", "Sketch three failure scenarios", "Test the workflow with a manual pilot"]
+    },
+    "ux": {
+      "summary": "The idea starts from a relatable need. Make the intended experience more concrete by observing real users and testing a short prototype before building.",
+      "strengths": ["The concept addresses an everyday user need.", "The intended audience is specific enough to recruit research participants.", "The value proposition can be explored in a lightweight prototype."],
+      "weaknesses": [
+        { "title": "The audience still contains different needs", "why": "Users with different routines may need very different experiences.", "improvement": "Pick one initial user group and document the situation in which they need help." },
+        { "title": "The first-use experience is undefined", "why": "People may leave if they cannot quickly understand what to do and what they will get.", "improvement": "Sketch three screens showing the shortest path from arrival to the first useful result." },
+        { "title": "Trust has not been tested", "why": "Unanswered questions can prevent people from trying an unfamiliar service.", "improvement": "Ask five users what would make them hesitate, then test copy that addresses those concerns." }
+      ],
+      "tasks": ["Choose one initial user group", "Sketch a three-screen user journey", "Interview five users about trust", "Run a short usability test"]
+    }
+  }
+}
