@@ -7,3 +7,5 @@ out/
 artifacts/
 test-results/
 playwright-report/
+tmp/
+output/
