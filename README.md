@@ -72,7 +72,7 @@ NEXT_PUBLIC_STRIPE_PAYMENT_LINKS='{"100":"https://buy.stripe.com/<A$1 link>","20
 
 When a customer sends a claim of their own (not the "Use the example" claim), the browser posts it to `/api/requests`, which emails Hugena's inbox through [Resend](https://resend.com). The confirm step asks these customers for the email address their report should go to; it is the email's reply-to address and is prefilled at Stripe checkout. Paid requests are emailed after Stripe redirects back, with the Stripe session and `client_reference_id`, so you can match the payment.
 
-- Server environment variables: `RESEND_API_KEY` (secret), `HUGENA_NOTIFY_EMAIL` (where requests go, e.g. `support@coriva.tech`) and optionally `HUGENA_NOTIFY_FROM` (default `Hugena <onboarding@resend.dev>`).
+- Server environment variables: `RESEND_API_KEY` (secret), `HUGENA_NOTIFY_EMAIL` (where requests go; currently `contact@coriva.tech`, the Resend account's own address) and optionally `HUGENA_NOTIFY_FROM` (default `Hugena <onboarding@resend.dev>`).
 - Resend's shared `onboarding@resend.dev` sender only delivers to the email address that owns the Resend account. To send to another inbox, verify your domain in Resend and set `HUGENA_NOTIFY_FROM`, for example `Hugena <hugena@coriva.tech>`.
 - Each request is emailed once: the browser remembers that it was sent, and the request id is the Resend idempotency key, so a retry doesn't send a duplicate. If sending fails, the status page says so and offers to try again.
 - Without `RESEND_API_KEY` or `HUGENA_NOTIFY_EMAIL` the endpoint answers 503 and nothing is sent. The endpoint rejects malformed bodies and posts from other sites, but has no rate limit.
@@ -83,7 +83,7 @@ When a customer sends a claim of their own (not the "Use the example" claim), th
 npx vercel@latest login
 npx vercel@latest link --yes --project hugena
 printf '%s' '{"200":"https://buy.stripe.com/<A$2 link>"}' | npx vercel@latest env add NEXT_PUBLIC_STRIPE_PAYMENT_LINKS production
-printf '%s' 'support@coriva.tech' | npx vercel@latest env add HUGENA_NOTIFY_EMAIL production
+printf '%s' 'contact@coriva.tech' | npx vercel@latest env add HUGENA_NOTIFY_EMAIL production
 printf '%s' '<Resend API key>' | npx vercel@latest env add RESEND_API_KEY production --sensitive
 npx vercel@latest deploy --prod --yes
 ```
