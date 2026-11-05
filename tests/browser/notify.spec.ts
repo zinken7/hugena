@@ -71,3 +71,11 @@ test('the request endpoint rejects bad input and cross-site posts', async ({ req
   expect((await request.post('/api/requests', { data: {}, headers: { origin: 'https://evil.example' } })).status()).toBe(403);
   // A valid post isn't sent here: with RESEND_API_KEY set it would deliver a real email.
 });
+
+test('the checkout endpoint rejects bad input, unknown advisers and cross-site posts', async ({ request }) => {
+  const body = { requestId: 'hg-test', category: 'Cost estimate', example: false, adviser: { id: 'business', name: 'Alex Morgan', provider: 'platform', feeCents: 100 } };
+  expect((await request.post('/api/checkout', { data: { requestId: 'bad id' } })).status()).toBe(400);
+  expect((await request.post('/api/checkout', { data: { ...body, adviser: { ...body.adviser, id: 'made-up' } } })).status()).toBe(400);
+  expect((await request.post('/api/checkout', { data: body, headers: { origin: 'https://evil.example' } })).status()).toBe(403);
+  // A valid body isn't posted here: with STRIPE_SECRET_KEY set it would create a real Checkout Session.
+});

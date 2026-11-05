@@ -21,11 +21,16 @@ export function settlement(adviser: Pick<Adviser, 'provider' | 'feeCents'>, stat
   return { commissionCents, adviserCents: status === 'paid' ? adviser.feeCents - commissionCents : 0 };
 }
 export const money = (cents: number) => `A$${(cents / 100).toFixed(2)}`;
+// Every Hugena adviser charges this fee per review.
+export const platformFeeCents = 100;
 export const externalExample: Adviser = {
   id: 'external-taylor', name: 'Taylor Brooks', role: 'Independent Business Adviser', initials: 'TB',
   expertise: ['Go-to-market', 'Pricing strategy'], description: 'Independent adviser for finding first customers, setting prices and planning a launch.',
   color: 'purple', specialty: 'business', provider: 'external', feeCents: 200,
 };
+
+// The fees the server charges at checkout, by adviser id. The browser's copy of a fee is never trusted for these.
+export const catalogFees: Record<string, number> = { business: platformFeeCents, technical: platformFeeCents, ux: platformFeeCents, [externalExample.id]: externalExample.feeCents };
 
 // The fee sets the report: under A$2 gets the brief report, A$2 or more the comprehensive report.
 export const comprehensiveReportFromCents = 200;

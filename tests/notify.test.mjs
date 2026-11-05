@@ -28,6 +28,9 @@ test('the email lists the request, escapes HTML and names the Stripe reference w
   assert.match(email.text, /Customer email: ana@example\.com/);
   assert.match(email.text, /Fee and report: A\$1\.00 · Brief report/);
   assert.match(email.text, /session cs_live_abc/);
+  assert.match(email.text, /Paid through Stripe/);
+  const verified = requestEmail(notice, 'https://hugena.vercel.app', { amountTotal: 220, currency: 'AUD' });
+  assert.match(verified.text, /Payment: Paid A\$2\.20 incl\. any tax, verified with Stripe \(session cs_live_abc\)/);
   assert.ok(!email.html.includes('<script>'));
   assert.ok(email.html.includes('&lt;script&gt;'));
 });

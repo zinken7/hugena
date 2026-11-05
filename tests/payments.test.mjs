@@ -1,20 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { checkoutUrl, isPayment, isTestLink, parsePaymentLinks } from '../data/payments.ts';
+import { isPayment, parseCheckoutMode } from '../data/payments.ts';
 
-test('reads Stripe Payment Links keyed by fee in cents', () => {
-  const links = parsePaymentLinks('{"1000":"https://buy.stripe.com/test_abc","20000":"https://buy.stripe.com/xyz123"}');
-  assert.deepEqual(links, { 1000: 'https://buy.stripe.com/test_abc', 20000: 'https://buy.stripe.com/xyz123' });
-});
-test('ignores malformed config and links that are not Stripe Payment Links', () => {
-  for (const raw of [undefined, '', 'not json', '[]', 'null']) assert.deepEqual(parsePaymentLinks(raw), {});
-  assert.deepEqual(parsePaymentLinks('{"ten":"https://buy.stripe.com/test_a","1000":"https://evil.example/pay","2000":"http://buy.stripe.com/test_b"}'), {});
-});
-test('marks test-mode links and adds the request reference to the checkout URL', () => {
-  assert.equal(isTestLink('https://buy.stripe.com/test_abc'), true);
-  assert.equal(isTestLink('https://buy.stripe.com/aFafZg9ul6xodfQ59qaVa00'), false);
-  assert.equal(checkoutUrl('https://buy.stripe.com/test_abc', 'hg-123'), 'https://buy.stripe.com/test_abc?client_reference_id=hg-123');
-  assert.equal(checkoutUrl('https://buy.stripe.com/test_abc', 'hg-123', 'ana+demo@example.com'), 'https://buy.stripe.com/test_abc?client_reference_id=hg-123&prefilled_email=ana%2Bdemo%40example.com');
+test('checkout is on only for the live and test modes', () => {
+  assert.equal(parseCheckoutMode('live'), 'live');
+  assert.equal(parseCheckoutMode('test'), 'test');
+  for (const raw of [undefined, '', 'true', 'LIVE', '{"200":"https://buy.stripe.com/x"}']) assert.equal(parseCheckoutMode(raw), null);
 });
 test('accepts only well-formed stored payments', () => {
   assert.equal(isPayment({ status: 'pending', ref: 'hg-1' }), true);

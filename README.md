@@ -55,22 +55,34 @@ To refresh the two PDFs after changing the example, start the production build o
 
 Standard advisers are supplied by Hugena. External advisers pay 10% of their fee on a completed, paid case and retain 90%. A$2 allocates A$0.20 to Hugena and A$1.80 to the adviser. Integer cents and nearest-cent commission rounding preserve the fee total. This is not an added customer charge. The commercial model appears in adviser tools; customers see the total review price.
 
-## Payments (Stripe Payment Links)
+## Payments (Stripe Checkout)
 
-Customers pay on Stripe's hosted checkout before their request reaches the adviser. Links are set per adviser fee with `NEXT_PUBLIC_STRIPE_PAYMENT_LINKS`, a JSON object keyed by the fee in cents, read at build time (`data/payments.ts`):
+Customers pay through Stripe Checkout before their request reaches the adviser. `app/api/checkout/route.ts` creates a Checkout Session for the chosen adviser and returns Stripe's hosted payment page.
 
-```sh
-NEXT_PUBLIC_STRIPE_PAYMENT_LINKS='{"100":"https://buy.stripe.com/<A$1 link>","200":"https://buy.stripe.com/<A$2 link>"}'
-```
+- **Pricing is server-side.** Listed advisers (Alex, Sam, Jordan and Taylor) are charged their fee from `catalogFees` in `data/advisers.ts`, whatever the browser sends. Advisers who signed up in a browser exist only there, so their profile fee is used within Stripe's limits (A$0.50 to A$999,999.99) and the session's metadata says `price_source: profile`.
+- The session's line item names the report and adviser (for example "Hugena comprehensive report by Taylor Brooks"). `client_reference_id` and metadata carry the request id, adviser and report so each payment can be matched in Stripe.
+- Stripe returns the customer to `/review?paid={CHECKOUT_SESSION_ID}` or `/review?cancelled=1`. The request is stored as pending before checkout and only sent after the paid return.
+- Before emailing a paid request, `/api/requests` retrieves the Checkout Session from Stripe and checks that it is paid and belongs to that request. With checkout on, unpaid requests are refused.
 
-- A fee with a link shows "Pay A$… with Stripe" on the confirm step. The request is saved as pending, the customer goes to `<link>?client_reference_id=hg-<uuid>` (the reference appears on the payment in Stripe), and the request is only sent once Stripe redirects back to `/review?paid=<session id>`.
-- In Stripe, open each Payment Link → **After payment** → **Don't show confirmation page** → redirect to `https://<your-domain>/review?paid={CHECKOUT_SESSION_ID}`. Without this redirect the customer stays on Stripe's receipt page and the request stays pending.
-- A fee without a link falls back to the unpaid demo submission. Live links (no `test_` in the URL) charge real cards; the confirm step says so.
-- There is no server, so the return URL is trusted rather than checked with a Stripe webhook. Anyone who edits the URL can mark a request as paid in their own browser. Add a webhook and server-side records before relying on this for fulfilment.
+Environment variables:
+
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `NEXT_PUBLIC_STRIPE_CHECKOUT` | build | `live` or `test` shows "Pay … with Stripe"; unset keeps the unpaid demo submission |
+| `STRIPE_SECRET_KEY` | server, secret | A restricted key with **Checkout Sessions: Write** |
+| `STRIPE_MANAGED_PAYMENTS` | server | `true` lets Stripe act as merchant of record and handle tax |
+| `STRIPE_AUTOMATIC_TAX` | server | `true` uses Stripe Tax instead (needs your GST registration added in Stripe Tax) |
+| `STRIPE_TAX_CODE` | server | Product tax code for the line item, e.g. `txcd_20030000` |
+
+Hugena currently runs with neither option: customers pay the adviser fee with no tax added, and the confirm step says so. If you turn on Managed Payments or Stripe Tax, update that wording in `app/workspace.tsx`.
+
+Managed Payments only covers fully automated digital products; Stripe's eligibility rules exclude professional services and anything with human intervention, which describes an adviser's review. Check with Stripe and your accountant before relying on it.
+
+The success redirect is trusted only after the server confirms the session with Stripe. There is still no webhook, so a customer who pays and closes the tab before returning has paid without their request being emailed; their payment shows in Stripe with the request id.
 
 ## Request emails (Resend)
 
-When a customer sends a claim of their own (not the "Use the example" claim), the browser posts it to `/api/requests`, which emails Hugena's inbox through [Resend](https://resend.com). The confirm step asks these customers for the email address their report should go to; it is the email's reply-to address and is prefilled at Stripe checkout. Paid requests are emailed after Stripe redirects back, with the Stripe session and `client_reference_id`, so you can match the payment.
+When a customer sends a claim of their own (not the "Use the example" claim), the browser posts it to `/api/requests`, which emails Hugena's inbox through [Resend](https://resend.com). The confirm step asks these customers for the email address their report should go to; it is the email's reply-to address and is passed to Stripe Checkout as the customer email. Paid requests are emailed after Stripe redirects back, with the Stripe session and `client_reference_id`, so you can match the payment.
 
 - Server environment variables: `RESEND_API_KEY` (secret), `HUGENA_NOTIFY_EMAIL` (where requests go; currently `contact@coriva.tech`, the Resend account's own address) and optionally `HUGENA_NOTIFY_FROM` (default `Hugena <onboarding@resend.dev>`).
 - Resend's shared `onboarding@resend.dev` sender only delivers to the email address that owns the Resend account. To send to another inbox, verify your domain in Resend and set `HUGENA_NOTIFY_FROM`, for example `Hugena <hugena@coriva.tech>`.
@@ -82,13 +94,14 @@ When a customer sends a claim of their own (not the "Use the example" claim), th
 ```sh
 npx vercel@latest login
 npx vercel@latest link --yes --project hugena
-printf '%s' '{"200":"https://buy.stripe.com/<A$2 link>"}' | npx vercel@latest env add NEXT_PUBLIC_STRIPE_PAYMENT_LINKS production
+printf '%s' 'live' | npx vercel@latest env add NEXT_PUBLIC_STRIPE_CHECKOUT production
+printf '%s' '<restricted key>' | npx vercel@latest env add STRIPE_SECRET_KEY production --sensitive
 printf '%s' 'contact@coriva.tech' | npx vercel@latest env add HUGENA_NOTIFY_EMAIL production
 printf '%s' '<Resend API key>' | npx vercel@latest env add RESEND_API_KEY production --sensitive
 npx vercel@latest deploy --prod --yes
 ```
 
-`.vercelignore` keeps tests, the extension and local artifacts out of the upload. Changing `NEXT_PUBLIC_STRIPE_PAYMENT_LINKS` needs a new deployment because the value is built into the page.
+`.vercelignore` keeps tests, the extension and local artifacts out of the upload. Changing `NEXT_PUBLIC_STRIPE_CHECKOUT` needs a new deployment because the value is built into the page.
 
 ## Verification
 

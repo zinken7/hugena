@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, FileText } from 'lucide-react';
 import demo from '../data/demo.json';
-import { type Adviser, type Specialty, externalExample, isAdviser, money, reportFormat, settlement } from '../data/advisers';
-import { paymentLinkFor } from '../data/payments';
+import { type Adviser, type Specialty, externalExample, isAdviser, money, platformFeeCents, reportFormat, settlement } from '../data/advisers';
 
 const opinions = { business: 'You can’t set a monthly budget without knowing how people will use the app. I’d start with the cost drivers and the business assumptions behind them.', technical: '5,000 users could make 5,000 requests or five million. I’d check request volume, storage and bandwidth before accepting this estimate.', ux: 'I’d want to know what an active user does in the app. I’d map the main journey before accepting any assumptions about sessions or load.' };
 const profilesKey = 'pitchproof-external-advisers-v1';
 const roles = { business: 'Business Adviser', technical: 'Technical Adviser', ux: 'UX Adviser' };
-export const standardAdvisers: Adviser[] = demo.reviewers.map(person => ({ ...person, specialty: person.id as Specialty, provider: 'platform', feeCents: 100 }));
+export const standardAdvisers: Adviser[] = demo.reviewers.map(person => ({ ...person, specialty: person.id as Specialty, provider: 'platform', feeCents: platformFeeCents }));
 
 // Every adviser on the platform: Hugena's own advisers plus independent ones saved in this browser.
 export function useAdvisers() {
@@ -38,7 +37,7 @@ export function AdviserCard({ person, onChoose }: { person: Adviser; onChoose?: 
     <h2>{person.name}</h2><div className="reviewer-role">{person.role}</div><p>{person.description}</p>
     <blockquote className="sample-opinion"><span>SAMPLE OPINION</span><p>{person.opinion || (person.id.startsWith('external-') && person.id !== 'external-taylor' ? 'No sample opinion yet.' : opinions[person.specialty])}</p><small>Written about the hosting-cost example, not your claim.</small></blockquote>
     <div className="tags">{person.expertise.map((tag, i) => <span key={`${tag}-${i}`}>{tag}</span>)}</div>
-    <div className="price"><strong>{money(person.feeCents)}</strong><span>{paymentLinkFor(person.feeCents) ? 'per review, plus GST' : 'per review'}</span></div>
+    <div className="price"><strong>{money(person.feeCents)}</strong><span>per review</span></div>
     <div className="report-format"><FileText size={15} /><span>{reportFormat(person.feeCents).label}</span></div>
     {onChoose && <button className="button full" onClick={() => onChoose(person)}>Choose adviser <ArrowRight size={16} /></button>}
   </article>;

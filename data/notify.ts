@@ -38,10 +38,15 @@ export function parseRequestNotice(body: unknown): RequestNotice | null {
 const aud = (cents: number) => `A$${(cents / 100).toFixed(2)}`;
 const escape = (value: string) => value.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
 
-export function requestEmail(n: RequestNotice, site: string) {
+export type VerifiedPayment = { amountTotal: number; currency: string };
+
+const paidAmount = (v: VerifiedPayment) => v.currency === 'AUD' ? aud(v.amountTotal) : `${(v.amountTotal / 100).toFixed(2)} ${v.currency}`;
+
+export function requestEmail(n: RequestNotice, site: string, verified?: VerifiedPayment) {
+  const session = n.payment.sessionId ? ` (session ${n.payment.sessionId})` : '';
   const paid = n.payment.status === 'paid'
-    ? `Paid through Stripe${n.payment.sessionId ? ` (session ${n.payment.sessionId})` : ''}. Find it in Stripe by client reference ${n.payment.ref ?? n.requestId}.`
-    : 'Not paid: this adviser fee has no Stripe link yet.';
+    ? `${verified ? `Paid ${paidAmount(verified)} incl. any tax, verified with Stripe` : 'Paid through Stripe'}${session}. Client reference: ${n.payment.ref ?? n.requestId}.`
+    : 'Not paid: Stripe checkout was off when this request was sent.';
   const rows: [string, string][] = [
     ['Request', n.requestId],
     ['Customer email', n.customerEmail],
