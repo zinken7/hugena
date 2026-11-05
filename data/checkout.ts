@@ -60,9 +60,10 @@ export function checkoutSessionParams(req: CheckoutRequest, charge: Charge, opts
   const metadata: Record<string, string> = { request_id: req.requestId, adviser_id: req.adviser.id, adviser_name: req.adviser.name,
     report: opts.reportLabel, category: req.category, price_source: charge.source, example: req.example ? 'yes' : 'no' };
   for (const [key, value] of Object.entries(metadata)) p.set(`metadata[${key}]`, value.slice(0, 500));
-  // Managed Payments computes tax itself and rejects automatic_tax, so the two are exclusive.
-  if (opts.managedPayments) p.set('managed_payments[enabled]', 'true');
-  else if (opts.automaticTax) p.set('automatic_tax[enabled]', 'true');
+  // Managed Payments computes tax itself and rejects automatic_tax, so the two are exclusive. It is always set
+  // explicitly: an account can switch Managed Payments on by default, and then it would apply to every session.
+  p.set('managed_payments[enabled]', opts.managedPayments ? 'true' : 'false');
+  if (!opts.managedPayments && opts.automaticTax) p.set('automatic_tax[enabled]', 'true');
   return p;
 }
 

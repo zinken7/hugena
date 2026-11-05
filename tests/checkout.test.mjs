@@ -42,10 +42,13 @@ test('builds a Checkout Session priced by the server with the request reference 
   assert.equal(p.get('customer_email'), 'ana@example.com');
   assert.equal(p.get('metadata[price_source]'), 'catalog');
   assert.equal(p.get('automatic_tax[enabled]'), 'true');
-  assert.equal(p.get('managed_payments[enabled]'), null);
+  assert.equal(p.get('managed_payments[enabled]'), 'false');
 });
 
-test('Managed Payments replaces automatic tax, which Stripe rejects alongside it', () => {
+test('Managed Payments is always set explicitly and replaces automatic tax', () => {
+  const off = checkoutSessionParams(parseCheckoutRequest(request), { feeCents: 100, source: 'catalog' }, { origin: 'https://x.test', reportLabel: 'Brief report', managedPayments: false, automaticTax: false });
+  assert.equal(off.get('managed_payments[enabled]'), 'false');
+  assert.equal(off.get('automatic_tax[enabled]'), null);
   const p = checkoutSessionParams(parseCheckoutRequest(request), { feeCents: 200, source: 'catalog' }, { origin: 'https://x.test', reportLabel: 'Brief report', managedPayments: true, automaticTax: true });
   assert.equal(p.get('managed_payments[enabled]'), 'true');
   assert.equal(p.get('automatic_tax[enabled]'), null);
