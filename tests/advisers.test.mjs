@@ -1,9 +1,9 @@
 ﻿import assert from 'node:assert/strict';
 import test from 'node:test';
-import { externalExample, isAdviser, settlement } from '../data/advisers.ts';
+import { externalExample, isAdviser, reportFormat, settlement } from '../data/advisers.ts';
 
-test('external success splits A$200 into A$20 commission and A$180 retained', () => {
-  assert.deepEqual(settlement(externalExample, 'paid'), { commissionCents: 2000, adviserCents: 18000 });
+test('external success splits A$2 into A$0.20 commission and A$1.80 retained', () => {
+  assert.deepEqual(settlement(externalExample, 'paid'), { commissionCents: 20, adviserCents: 180 });
 });
 test('in-progress and completed unpaid cases owe no commission', () => {
   for (const status of ['open', 'completed']) {
@@ -23,4 +23,10 @@ test('rounding to cents preserves the original total including small fees', () =
 test('saved profiles reject malformed, unsupported, or invalid fees', () => {
   assert.equal(isAdviser(externalExample), true);
   for (const value of [null, {}, { ...externalExample, specialty: 'invalid' }, { ...externalExample, provider: 'invalid' }, { ...externalExample, feeCents: -1 }, { ...externalExample, feeCents: 1.2 }, { ...externalExample, name: ' ' }]) assert.equal(isAdviser(value), false);
+});
+test('a higher fee buys the longer report', () => {
+  assert.equal(reportFormat(100).label, 'Brief report');
+  assert.equal(reportFormat(199).kind, 'brief');
+  assert.equal(reportFormat(200).kind, 'comprehensive');
+  assert.equal(reportFormat(20000).label, 'Comprehensive report');
 });

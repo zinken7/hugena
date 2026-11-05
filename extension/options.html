@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Hugena settings</title>
+  <style>
+    body { margin: 0; padding: 20px; min-width: 320px; font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: #0d0c14; background: #fff; }
+    h1 { margin: 0 0 4px; font-size: 16px; }
+    p { margin: 0 0 16px; color: #4d505c; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; }
+    input { box-sizing: border-box; width: 100%; padding: 9px 11px; border: 1px solid #e2e2e9; border-radius: 10px; font: inherit; }
+    input:focus-visible { outline: 2px solid #8f35e6; outline-offset: 2px; }
+    button { margin-top: 12px; padding: 8px 16px; border: 0; border-radius: 999px; background: #0d0c14; color: #fff; font: inherit; font-weight: 500; cursor: pointer; }
+    #status { margin-left: 10px; color: #0e7a41; }
+  </style>
+</head>
+<body>
+  <h1>Hugena</h1>
+  <p>The send button opens answers in this Hugena address.</p>
+  <form id="settings">
+    <label for="url">Hugena address</label>
+    <input id="url" type="url" required placeholder="http://localhost:3000">
+    <button type="submit">Save</button><span id="status" role="status"></span>
+  </form>
+  <script src="options.js"></script>
+</body>
+</html>

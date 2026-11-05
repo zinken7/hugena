@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Hugena: send AI answers to an expert",
+  "short_name": "Hugena",
+  "version": "0.1.0",
+  "description": "Adds a send button under AI answers. One click opens the whole answer in Hugena so an expert can check it.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["storage"],
+  "options_ui": { "page": "options.html", "open_in_tab": false },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://chatgpt.com/*", "https://gemini.google.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

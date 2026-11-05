@@ -1,0 +1,11 @@
+# Not needed to build or serve the site
+node_modules
+.next
+artifacts
+test-results
+playwright-report
+output
+tmp
+tests
+extension
+.DS_Store

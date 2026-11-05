@@ -1,9 +1,9 @@
 {
   "example": { "name": "Neighbourhood Table", "problem": "Busy people want affordable, healthy meals but have little time to cook.", "solution": "A local platform connecting home cooks with neighbours who want fresh, ready-made meals.", "users": "Busy professionals and students living in urban neighbourhoods." },
   "reviewers": [
-    { "id": "business", "name": "Alex Morgan", "role": "Business Consultant", "initials": "AM", "expertise": ["Business strategy", "Market validation"], "description": "Turn a promising concept into a business that makes sense. Pressure-test your market, pricing, and path to growth.", "color": "peach" },
-    { "id": "technical", "name": "Sam Chen", "role": "Technical Expert", "initials": "SC", "expertise": ["Product architecture", "MVP planning"], "description": "Find a practical path from idea to build. Explore feasibility, technical risks, and what your first version really needs.", "color": "blue" },
-    { "id": "ux", "name": "Jordan Ellis", "role": "UX Designer", "initials": "JE", "expertise": ["User research", "Product experience"], "description": "See your idea through your users’ eyes. Challenge assumptions and shape an experience people will want to use.", "color": "purple" }
+    { "id": "business", "name": "Alex Morgan", "role": "Business Consultant", "initials": "AM", "expertise": ["Business strategy", "Market validation"], "description": "Checks whether the market, pricing and growth plan behind an idea add up.", "color": "peach" },
+    { "id": "technical", "name": "Sam Chen", "role": "Technical Expert", "initials": "SC", "expertise": ["Product architecture", "MVP planning"], "description": "Looks at whether an idea can be built, where the technical risks are and what the first version needs.", "color": "blue" },
+    { "id": "ux", "name": "Jordan Ellis", "role": "UX Designer", "initials": "JE", "expertise": ["User research", "Product experience"], "description": "Tests assumptions about who the users are and how they will use the product.", "color": "purple" }
   ],
   "reports": {
     "business": {

@@ -1,7 +1,7 @@
 {
-  "name": "pitchproof",
+  "name": "hugena",
   "version": "1.0.0",
-  "description": "PitchProof interactive MVP",
+  "description": "Hugena: expert review for AI answers",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

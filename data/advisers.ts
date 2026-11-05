@@ -23,6 +23,12 @@ export function settlement(adviser: Pick<Adviser, 'provider' | 'feeCents'>, stat
 export const money = (cents: number) => `A$${(cents / 100).toFixed(2)}`;
 export const externalExample: Adviser = {
   id: 'external-taylor', name: 'Taylor Brooks', role: 'Independent Business Adviser', initials: 'TB',
-  expertise: ['Go-to-market', 'Pricing strategy'], description: 'Explore your first customers, test your pricing, and plan a focused launch with an independent adviser.',
-  color: 'purple', specialty: 'business', provider: 'external', feeCents: 20000,
+  expertise: ['Go-to-market', 'Pricing strategy'], description: 'Independent adviser for finding first customers, setting prices and planning a launch.',
+  color: 'purple', specialty: 'business', provider: 'external', feeCents: 200,
 };
+
+// The fee sets the report: under A$2 gets the brief report, A$2 or more the comprehensive report.
+export const comprehensiveReportFromCents = 200;
+export const reportFormat = (feeCents: number) => feeCents >= comprehensiveReportFromCents
+  ? { kind: 'comprehensive', label: 'Comprehensive report' } as const
+  : { kind: 'brief', label: 'Brief report' } as const;

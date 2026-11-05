@@ -1,0 +1,4 @@
+/* The button copies the host's copy-button classes so it matches each site; this only adds the hover colour. */
+.hugena-send { display: inline-flex; align-items: center; justify-content: center; }
+.hugena-send svg { width: 16px; height: 16px; flex: none; }
+.hugena-send:hover { color: #8f35e6 !important; }

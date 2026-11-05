@@ -1,10 +1,11 @@
 export type Claim = { claim: string; context: string; constraints: string; decision: string; category: string };
-export type Review = { verdict: string; finding: string; evidence: string; next: string };
+export type ReportFile = { id: string; name: string; size: number; type: string };
+export type Review = { verdict: string; finding: string; evidence: string; next: string; file?: ReportFile };
 
 // One source for the example form, claim brief, report and downloadable PDFs.
 // All rates below are invented for demonstration; they are not provider quotes.
 export const sampleCase = {
-  id: 'PP-001',
+  id: 'HG-001',
   date: '3 November 2026',
   claim: {
     claim: 'This app can support 5,000 monthly active users for under A$50/month.',
@@ -15,7 +16,7 @@ export const sampleCase = {
   } satisfies Claim,
   review: {
     verdict: 'Insufficient evidence',
-    finding: 'A user count does not establish a monthly bill or prove capacity. Under the invented rates in this example, low usage costs A$41.80 per month including GST, while higher usage costs A$85.80. Both scenarios have 5,000 monthly active users. The claim is possible in one model but is not established for the planned app.',
+    finding: 'A user count doesn’t tell you the monthly bill or prove capacity. With the made-up rates in this example, low usage costs A$41.80 a month including GST and higher usage costs A$85.80, both with 5,000 monthly active users. The claim holds in one scenario but isn’t established for the planned app.',
     evidence: 'E1: the sample claim and founder brief. E2: two explicitly assumed usage scenarios. E3: an invented rate card, used only to demonstrate the calculation. No provider quote, production measurements or load test was supplied.',
     next: 'Measure requests, stored data and outbound transfer in a pilot. Obtain dated provider quotes, calculate the full bill including GST and verify capacity before committing to the A$50 budget.',
   } satisfies Review,
