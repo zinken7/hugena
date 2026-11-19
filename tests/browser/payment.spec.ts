@@ -66,3 +66,27 @@ test('if checkout can’t start, the customer stays on the confirm step and can 
   await page.getByRole('button', { name: 'Pay A$2.00 with Stripe' }).click();
   await expect.poll(() => attempts).toBe(2);
 });
+
+test('the example claim skips Stripe and opens its prepared report', async ({ page }) => {
+  let checkouts = 0;
+  let notices = 0;
+  await page.route('**/api/checkout', route => { checkouts++; return route.fulfill({ status: 500, json: { error: 'unexpected' } }); });
+  await page.route('**/api/requests', route => { notices++; return route.fulfill({ json: { ok: true } }); });
+  await page.goto('/review');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.getByRole('button', { name: 'Use the example', exact: true }).click();
+  await page.getByRole('button', { name: 'Choose advisers', exact: true }).click();
+  await page.getByRole('button', { name: 'External advisers', exact: true }).click();
+  await page.getByRole('button', { name: 'Choose adviser', exact: true }).first().click();
+  await expect(page.getByLabel('Email for your report')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /with Stripe/ })).toHaveCount(0);
+  await expect(page.getByText('This is a demo. Nobody is contacted and you won’t be charged.')).toBeVisible();
+  await page.getByRole('button', { name: 'Submit request', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Your request is with your adviser.' })).toBeVisible();
+  await expect(page).toHaveURL(/\/review$/);
+  await expect(page.locator('.sample-toolbar')).toContainText('Comprehensive report', { timeout: 5000 });
+  await expect(page.getByText('Paid with Stripe')).toHaveCount(0);
+  expect(checkouts).toBe(0);
+  expect(notices).toBe(0);
+});

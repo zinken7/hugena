@@ -57,7 +57,7 @@ Standard advisers are supplied by Hugena. External advisers pay 10% of their fee
 
 ## Payments (Stripe Checkout)
 
-Customers pay through Stripe Checkout before their request reaches the adviser. `app/api/checkout/route.ts` creates a Checkout Session for the chosen adviser and returns Stripe's hosted payment page.
+Customers pay through Stripe Checkout before their own claim reaches the adviser. The "Use the example" claim skips Stripe: it asks for no email or payment and opens its prepared report, so the demo works without paying. `app/api/checkout/route.ts` creates a Checkout Session for the chosen adviser and returns Stripe's hosted payment page.
 
 - **Pricing is server-side.** Listed advisers (Alex, Sam, Jordan and Taylor) are charged their fee from `catalogFees` in `data/advisers.ts`, whatever the browser sends. Advisers who signed up in a browser exist only there, so their profile fee is used within Stripe's limits (A$0.50 to A$999,999.99) and the session's metadata says `price_source: profile`.
 - The session's line item names the report and adviser (for example "Hugena comprehensive report by Taylor Brooks"). `client_reference_id` and metadata carry the request id, adviser and report so each payment can be matched in Stripe.
@@ -68,7 +68,7 @@ Environment variables:
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_STRIPE_CHECKOUT` | build | `live` or `test` shows "Pay … with Stripe"; unset keeps the unpaid demo submission |
+| `NEXT_PUBLIC_STRIPE_CHECKOUT` | build | `live` or `test` shows "Pay … with Stripe" for the customer's own claims; unset keeps the unpaid demo submission. The example claim always uses the demo submission |
 | `STRIPE_SECRET_KEY` | server, secret | A restricted key with **Checkout Sessions: Write** |
 | `STRIPE_MANAGED_PAYMENTS` | server | `true` lets Stripe act as merchant of record and handle tax |
 | `STRIPE_AUTOMATIC_TAX` | server | `true` uses Stripe Tax instead (needs your GST registration added in Stripe Tax) |
