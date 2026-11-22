@@ -289,7 +289,7 @@ npm run build && npm run start -- --port 3100   # in one terminal
 npx playwright test                             # in another
 ```
 
-It covers the separate customer and adviser controls, advisers seeing only their own requests, submission, draft restoration, publication, report viewing, report file import, external-adviser onboarding, the extension's button placement, request emails and retries, endpoint input checks, mobile layout at 390 px, and automated WCAG A/AA checks on the entry pages and both reports. `tests/browser/payment.spec.ts` is skipped unless the build was made with `NEXT_PUBLIC_STRIPE_CHECKOUT=test`. Set `PLAYWRIGHT_BASE_URL` for another address. Automated accessibility checks are not a full accessibility certification.
+It covers the separate customer and adviser controls, advisers seeing only their own requests, submission, draft restoration, publication, report viewing, report file import, external-adviser onboarding, the extension's button placement, request emails and retries, endpoint input checks, mobile layout at 390 px, and automated WCAG A/AA checks on the entry pages and both reports. `tests/browser/payment.spec.ts` runs only when `NEXT_PUBLIC_STRIPE_CHECKOUT=test` is set for both `npm run build` and `npx playwright test`. It answers `/api/checkout` and Stripe's hosted page locally, so no real Checkout Session is created. Set `PLAYWRIGHT_BASE_URL` for another address. Automated accessibility checks are not a full accessibility certification.
 
 ### Regenerating the sample PDFs
 
